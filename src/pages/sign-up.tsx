@@ -24,7 +24,10 @@ const SignUp: React.FC = () => {
     watch,
   } = useForm({ criteriaMode: "firstError" });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    console.log("Sign Up Success !", data);
+    router.push("/");
+  };
 
   return (
     <>

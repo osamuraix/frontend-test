@@ -1,19 +1,57 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  IActivity,
+  fetchActivityData,
+  getActivity,
+} from "@/store/reducers/activitySlice";
 
 const Index: React.FC = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const { data: activityData } = useAppSelector((state) => state.activitySlice);
 
+  const [loading, setLoading] = useState(false);
   const [activity, setActivity] = useState("");
   const [type, setType] = useState("");
-  const [participant, setParticipant] = useState(1);
-  const [budget, setBudget] = useState(50);
+  const [participants, setParticipants] = useState(0);
+  const [budget, setBudget] = useState(0);
 
-  const handleSubmit = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
-    console.log(activity, type, participant, budget);
+
+    setLoading(true);
+
+    try {
+      const response = await dispatch(getActivity());
+      const responseData: IActivity = response.payload as IActivity;
+
+      setActivity(responseData.activity);
+      setType(responseData.type);
+      setParticipants(responseData.participants);
+      setBudget(responseData.price);
+    } catch (error) {
+      console.error("Error fetching activity:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    if (activityData) {
+      setActivity(activityData.activity);
+      setType(activityData.type);
+      setParticipants(activityData.participants);
+      setBudget(activityData.price);
+    }
+  }, [activityData]);
+
+  useEffect(() => {
+    dispatch(fetchActivityData());
+  }, []);
 
   return (
     <>
@@ -29,7 +67,7 @@ const Index: React.FC = () => {
               <label>{t("Activity")}</label>
             </div>
             <div className="box-50">
-              <p>Write a song</p>
+              <p>{activity}</p>
             </div>
           </div>
 
@@ -38,7 +76,7 @@ const Index: React.FC = () => {
               <label>{t("Type")}</label>
             </div>
             <div className="box-50">
-              <p>Music</p>
+              <p>{type}</p>
             </div>
           </div>
         </div>
@@ -50,7 +88,7 @@ const Index: React.FC = () => {
                 <label>{t("Participant")}</label>
               </div>
               <div className="box-50">
-                <p>1</p>
+                <p>{participants}</p>
               </div>
             </div>
 
@@ -59,19 +97,19 @@ const Index: React.FC = () => {
                 <label>{t("Budget")}</label>
               </div>
               <div className="box-50">
-                <p>$50.00</p>
+                <p>${budget}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <button className={"button"} onClick={handleSubmit}>
-          {t("Get New Activity")}
+        <button className={"button"} onClick={handleClick} disabled={loading}>
+          {loading ? t("Loading...") : t("Get New Activity")}
         </button>
       </div>
 
       <div className={"pageFooter"}>
-        <Link href="/sign-out" className="red">
+        <Link href="/sign-in" className="red">
           <span className="center">{t("Sign out")}</span>
         </Link>
       </div>

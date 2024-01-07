@@ -21,7 +21,10 @@ const SignIn: React.FC = () => {
     register,
   } = useForm({ criteriaMode: "firstError" });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    console.log("Sign In Success !", data);
+    router.push("/");
+  };
 
   return (
     <>
