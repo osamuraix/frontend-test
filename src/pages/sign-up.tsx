@@ -26,7 +26,7 @@ const SignUp: React.FC = () => {
 
   const onSubmit = (data) => {
     console.log("Sign Up Success !", data);
-    router.push("/");
+    router.push("/landing");
   };
 
   return (
@@ -159,7 +159,7 @@ const SignUp: React.FC = () => {
       </form>
 
       <div className={"pageFooter"}>
-        <Link href="/sign-in">
+        <Link href="/">
           <span className="black">{t("Already has an account")}</span>
           <span>{t("Sign in")}</span>
         </Link>
