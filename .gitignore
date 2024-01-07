@@ -4,10 +4,6 @@
 # Transpiled files
 /.next
 
-# dotenv environment variables file
-.env
-.env.test
-
 # Optional npm cache directory
 .npm
 .cache
